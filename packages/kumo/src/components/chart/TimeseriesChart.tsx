@@ -34,22 +34,12 @@ export interface TimeseriesChartProps {
    * Custom formatter for x-axis tick labels.
    * Receives the raw timestamp in milliseconds and returns a display string,
    * overriding ECharts' built-in time formatting.
-   *
-   * @example
-   * ```ts
-   * xAxisTickLabelFormat={(value) => new Date(value).toLocaleTimeString()}
-   * ```
    */
   xAxisTickLabelFormat?: (value: number) => string;
   /**
    * Custom formatter for y-axis tick labels.
    * Receives the raw value and returns a display string.
    * When omitted, ECharts' built-in formatter is used.
-   *
-   * @example
-   * ```ts
-   * yAxisTickLabelFormat={(value) => `${value / 1000}k`}
-   * ```
    */
   yAxisTickLabelFormat?: (value: number) => string;
   /** Label for the y-axis (value axis) */
@@ -60,11 +50,6 @@ export interface TimeseriesChartProps {
    * Custom formatter for tooltip values.
    * Receives the raw y-value and returns a display string.
    * When omitted, the raw value is shown.
-   *
-   * @example
-   * ```ts
-   * tooltipValueFormat={(value) => `${value.toFixed(2)} req/s`}
-   * ```
    */
   tooltipValueFormat?: (value: number) => string;
   /** Indicates incomplete data periods with optional before/after timestamps in ms */
