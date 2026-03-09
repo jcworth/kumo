@@ -71,7 +71,7 @@ const data = [
     <Heading level={3} class="mb-4">Custom Axis & Tooltip Formats</Heading>
 
     <p class="my-4">
-      Use <code>xAxisTickLabelFormat</code> and <code>yAxisTickLabelFormat</code> to
+      Use <code>xAxisTickFormat</code> and <code>yAxisTickFormat</code> to
       control how axis tick labels are rendered. The x-axis formatter receives the raw
       timestamp in milliseconds; the y-axis formatter receives the raw numeric value.
       Both return a display string.
@@ -92,12 +92,12 @@ const data = [
   data={data}
   xAxisName="Time (UTC)"
   yAxisName="Requests"
-  xAxisTickLabelFormat={(ts) => {
+  xAxisTickFormat={(ts) => {
     const d = new Date(ts);
     return d.getHours().toString().padStart(2, "0")
       + ":" + d.getMinutes().toString().padStart(2, "0");
   }}
-  yAxisTickLabelFormat={(value) => {
+  yAxisTickFormat={(value) => {
     if (value >= 1000) return value / 1000 + "k";
     return value.toString();
   }}

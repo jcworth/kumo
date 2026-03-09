@@ -127,11 +127,11 @@ export function CustomAxisLabelFormatDemo() {
       data={data}
       xAxisName="Time (UTC)"
       yAxisName="Requests"
-      xAxisTickLabelFormat={(ts) => {
+      xAxisTickFormat={(ts) => {
         const d = new Date(ts);
         return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
       }}
-      yAxisTickLabelFormat={(value) => {
+      yAxisTickFormat={(value) => {
         if (value >= 1000) return `${value / 1000}k`;
         return value.toString();
       }}

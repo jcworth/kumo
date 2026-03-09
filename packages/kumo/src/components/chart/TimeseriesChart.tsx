@@ -35,11 +35,16 @@ export interface TimeseriesChartProps {
    * Receives the raw timestamp in milliseconds and returns a display string,
    * overriding ECharts' built-in time formatting.
    */
-  xAxisTickLabelFormat?: (value: number) => string;
+  xAxisTickFormat?: (value: number) => string;
   /**
    * Custom formatter for y-axis tick labels.
    * Receives the raw value and returns a display string.
    * When omitted, ECharts' built-in formatter is used.
+   */
+  yAxisTickFormat?: (value: number) => string;
+  /**
+   * @deprecated Use `tooltipValueFormat` instead. This prop formats tooltip
+   * values, not y-axis tick labels. It will be removed in a future major version.
    */
   yAxisTickLabelFormat?: (value: number) => string;
   /** Label for the y-axis (value axis) */
@@ -49,7 +54,8 @@ export interface TimeseriesChartProps {
   /**
    * Custom formatter for tooltip values.
    * Receives the raw y-value and returns a display string.
-   * When omitted, the raw value is shown.
+   * When omitted, the raw value is shown. Takes precedence over the
+   * deprecated `yAxisTickLabelFormat` prop.
    */
   tooltipValueFormat?: (value: number) => string;
   /** Indicates incomplete data periods with optional before/after timestamps in ms */
@@ -95,9 +101,10 @@ export interface TimeseriesChartProps {
  *   echarts={echarts}
  *   data={[{ name: "Requests", data: [[Date.now(), 42]], color: "#086FFF" }]}
  *   xAxisName="Time"
- *   xAxisTickLabelFormat={(ts) => new Date(ts).toLocaleTimeString()}
+ *   xAxisTickFormat={(ts) => new Date(ts).toLocaleTimeString()}
  *   yAxisName="Count"
- *   yAxisTickLabelFormat={(value) => `${value / 1000}k`}
+ *   yAxisTickFormat={(value) => `${value / 1000}k`}
+ *   tooltipValueFormat={(value) => `${value.toFixed(2)} req/s`}
  *   onTimeRangeChange={(from, to) => setRange([from, to])}
  * />
  * ```
@@ -108,7 +115,8 @@ export function TimeseriesChart({
   data,
   xAxisName,
   xAxisTickCount,
-  xAxisTickLabelFormat,
+  xAxisTickFormat,
+  yAxisTickFormat,
   yAxisTickLabelFormat,
   yAxisName,
   yAxisTickCount,
@@ -238,7 +246,8 @@ export function TimeseriesChart({
           const rows = filteredParams
             .map((param: any) => {
               const value = param?.value?.[1];
-              return `${param.marker} ${param.seriesName}: <strong>${tooltipValueFormat ? tooltipValueFormat(value) : value}</strong>`;
+              const formatFn = tooltipValueFormat ?? yAxisTickLabelFormat;
+              return `${param.marker} ${param.seriesName}: <strong>${formatFn ? formatFn(value) : value}</strong>`;
             })
             .join("<br/>");
 
@@ -257,9 +266,9 @@ export function TimeseriesChart({
         },
         axisLine: { show: false },
         splitNumber: xAxisTickCount ?? 5,
-        ...(xAxisTickLabelFormat && {
+        ...(xAxisTickFormat && {
           axisLabel: {
-            formatter: (value: number) => xAxisTickLabelFormat(value),
+            formatter: (value: number) => xAxisTickFormat(value),
           },
         }),
       },
@@ -271,8 +280,8 @@ export function TimeseriesChart({
         axisTick: { show: true },
         axisLabel: {
           margin: 15,
-          ...(yAxisTickLabelFormat && {
-            formatter: (value: number) => yAxisTickLabelFormat(value),
+          ...(yAxisTickFormat && {
+            formatter: (value: number) => yAxisTickFormat(value),
           }),
         },
         splitLine: {
@@ -293,7 +302,8 @@ export function TimeseriesChart({
     data,
     xAxisName,
     xAxisTickCount,
-    xAxisTickLabelFormat,
+    xAxisTickFormat,
+    yAxisTickFormat,
     yAxisTickLabelFormat,
     yAxisName,
     yAxisTickCount,
