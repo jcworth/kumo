@@ -19,5 +19,3 @@ If you were using `yAxisTickLabelFormat` to customize tooltip output, switch to 
 ```tsx
 <TimeseriesChart tooltipValueFormat={(v) => `${v} req/s`} />
 ```
-
-<TimeseriesChart tooltipValueFormat={(v) => `${v} req/s`} />
