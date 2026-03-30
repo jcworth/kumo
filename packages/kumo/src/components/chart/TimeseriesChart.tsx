@@ -1,7 +1,7 @@
 import type * as echarts from "echarts/core";
 import type { LineSeriesOption, BarSeriesOption } from "echarts/charts";
 import type { EChartsOption } from "echarts";
-import { useEffect, useMemo, useRef } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { Chart, ChartEvents } from "./EChart";
 
 /** A single data series rendered on a `TimeseriesChart` */
@@ -119,27 +119,46 @@ export interface TimeseriesChartProps {
  * />
  * ```
  */
-export function TimeseriesChart({
-  echarts,
-  type = "line",
-  data,
-  xAxisName,
-  xAxisTickCount,
-  xAxisTickFormat,
-  yAxisTickFormat,
-  yAxisTickLabelFormat,
-  yAxisName,
-  yAxisTickCount,
-  tooltipValueFormat,
-  onTimeRangeChange,
-  height = 350,
-  incomplete,
-  isDarkMode,
-  gradient,
-  loading,
-  ariaDescription,
-}: TimeseriesChartProps) {
+export const TimeseriesChart = forwardRef<
+  echarts.ECharts | null,
+  TimeseriesChartProps
+>(function TimeseriesChart(
+  {
+    echarts,
+    type = "line",
+    data,
+    xAxisName,
+    xAxisTickCount,
+    xAxisTickFormat,
+    yAxisTickFormat,
+    yAxisTickLabelFormat,
+    yAxisName,
+    yAxisTickCount,
+    tooltipValueFormat,
+    onTimeRangeChange,
+    height = 350,
+    incomplete,
+    isDarkMode,
+    gradient,
+    loading,
+    ariaDescription,
+  },
+  ref,
+) {
   const chartRef = useRef<echarts.ECharts | null>(null);
+
+  const mergedRef = useCallback(
+    (instance: echarts.ECharts | null) => {
+      chartRef.current = instance;
+      if (typeof ref === "function") {
+        ref(instance);
+      } else if (ref) {
+        ref.current = instance;
+      }
+    },
+    [ref],
+  );
+
   const incompleteBefore = incomplete?.before;
   const incompleteAfter = incomplete?.after;
 
@@ -378,7 +397,7 @@ export function TimeseriesChart({
       {!loading && (
         <Chart
           echarts={echarts}
-          ref={chartRef}
+          ref={mergedRef}
           options={options as EChartsOption}
           height={height}
           isDarkMode={isDarkMode}
@@ -387,7 +406,9 @@ export function TimeseriesChart({
       )}
     </div>
   );
-}
+});
+
+TimeseriesChart.displayName = "TimeseriesChart";
 
 /**
  * Animated sine-wave skeleton shown while `TimeseriesChart` is in `loading` state.

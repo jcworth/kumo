@@ -8,7 +8,7 @@ import {
 import * as echarts from "echarts/core";
 import type { EChartsOption } from "echarts";
 import { BarChart, LineChart, PieChart } from "echarts/charts";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AriaComponent,
   AxisPointerComponent,
@@ -529,6 +529,98 @@ export function ChartExampleDemo() {
           />
         </div>
         <TimeseriesChart
+          xAxisName="Time (UTC)"
+          echarts={echarts}
+          isDarkMode={isDarkMode}
+          data={data}
+          height={300}
+        />
+      </LayerCard.Primary>
+    </LayerCard>
+  );
+}
+
+/**
+ * Timeseries chart with legend items that highlight the corresponding series on hover.
+ * Hovering a legend item dispatches a highlight action to the chart and fades the other legend items.
+ */
+export function LegendHighlightDemo() {
+  const isDarkMode = useIsDarkMode();
+  const chartRef = useRef<echarts.ECharts>(null);
+  const [hoveredSeries, setHoveredSeries] = useState<string | null>(null);
+
+  const series = useMemo(
+    () => [
+      {
+        name: "P99",
+        color: ChartPalette.semantic("Attention", isDarkMode),
+        value: "124",
+        unit: "ms",
+      },
+      {
+        name: "P95",
+        color: ChartPalette.semantic("Warning", isDarkMode),
+        value: "76",
+        unit: "ms",
+      },
+      {
+        name: "P75",
+        color: ChartPalette.semantic("Neutral", isDarkMode),
+        value: "32",
+        unit: "ms",
+      },
+      {
+        name: "P50",
+        color: ChartPalette.semantic("NeutralLight", isDarkMode),
+        value: "10",
+        unit: "ms",
+      },
+    ],
+    [isDarkMode],
+  );
+
+  const data = useMemo(
+    () =>
+      series.map((s, i) => ({
+        name: s.name,
+        data: buildSeriesData(3 - i, 30, 60_000, 1 - i * 0.2),
+        color: s.color,
+      })),
+    [series],
+  );
+
+  return (
+    <LayerCard>
+      <LayerCard.Secondary>Read latency</LayerCard.Secondary>
+      <LayerCard.Primary>
+        <div className="flex divide-x divide-kumo-line gap-4 px-2 mb-2">
+          {series.map((s) => (
+            <ChartLegend.LargeItem
+              key={s.name}
+              name={s.name}
+              color={s.color}
+              value={s.value}
+              unit={s.unit}
+              inactive={hoveredSeries !== null && hoveredSeries !== s.name}
+              onPointerEnter={() => {
+                setHoveredSeries(s.name);
+                chartRef.current?.dispatchAction({
+                  type: "highlight",
+                  seriesName: s.name,
+                });
+              }}
+              onPointerLeave={() => {
+                setHoveredSeries(null);
+                chartRef.current?.dispatchAction({
+                  type: "downplay",
+                  seriesName: s.name,
+                });
+              }}
+            />
+          ))}
+        </div>
+        <TimeseriesChart
+          ref={chartRef}
           xAxisName="Time (UTC)"
           echarts={echarts}
           isDarkMode={isDarkMode}
