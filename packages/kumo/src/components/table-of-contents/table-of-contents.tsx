@@ -5,7 +5,8 @@ import { cn } from "../../utils/cn";
 export const KUMO_TABLE_OF_CONTENTS_VARIANTS = {
   state: {
     default: {
-      classes: "text-kumo-subtle",
+      classes:
+        "text-kumo-subtle hover:bg-kumo-tint hover:text-kumo-default hover:font-medium",
       description: "Inactive section link",
     },
     active: {
@@ -19,132 +20,128 @@ export const KUMO_TABLE_OF_CONTENTS_DEFAULT_VARIANTS = {
   state: "default",
 } as const;
 
-export type KumoTableOfContentsState = keyof typeof KUMO_TABLE_OF_CONTENTS_VARIANTS.state;
+export type KumoTableOfContentsState =
+  keyof typeof KUMO_TABLE_OF_CONTENTS_VARIANTS.state;
 
 const ITEM_BASE =
   "group relative block truncate rounded-md py-1 pl-5 text-sm no-underline transition-all duration-500";
 
-const ITEM_HOVER = "hover:bg-kumo-tint hover:text-kumo-default hover:font-medium";
-
 const INDICATOR_BASE =
   "absolute inset-y-0 left-0.5 w-0.5 rounded-full transition-all duration-200 bg-kumo-brand";
 
-/**
- * TableOfContents root — neutral wrapper for the title and navigation list.
- *
- * @example
- * ```tsx
- * <TableOfContents>
- *   <TableOfContents.Title>On this page</TableOfContents.Title>
- *   <TableOfContents.List>
- *     <TableOfContents.Item href="#intro" active>Introduction</TableOfContents.Item>
- *     <TableOfContents.Item href="#api">API Reference</TableOfContents.Item>
- *   </TableOfContents.List>
- * </TableOfContents>
- * ```
- */
-const TableOfContentsRoot = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
-    <nav ref={ref} aria-label="Table of contents" className={cn(className)} {...props} />
-  ),
-);
+export type TableOfContentsProps = React.HTMLAttributes<HTMLElement>;
 
-export type TableOfContentsTitleProps = React.HTMLAttributes<HTMLParagraphElement>;
-
-const TableOfContentsTitle = forwardRef<HTMLParagraphElement, TableOfContentsTitleProps>(
+const TableOfContentsRoot = forwardRef<HTMLElement, TableOfContentsProps>(
   ({ className, ...props }, ref) => (
-    <p
+    <nav
       ref={ref}
-      className={cn(
-        "mb-3 text-xs font-semibold tracking-wide text-kumo-subtle uppercase",
-        className,
-      )}
+      aria-label="Table of contents"
+      className={className}
       {...props}
     />
   ),
 );
+
+export type TableOfContentsTitleProps =
+  React.HTMLAttributes<HTMLParagraphElement>;
+
+const TableOfContentsTitle = forwardRef<
+  HTMLParagraphElement,
+  TableOfContentsTitleProps
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn(
+      "mb-3 text-xs font-semibold tracking-wide text-kumo-subtle uppercase",
+      className,
+    )}
+    {...props}
+  />
+));
 
 export type TableOfContentsListProps = React.HTMLAttributes<HTMLDivElement>;
 
-const TableOfContentsList = forwardRef<HTMLDivElement, TableOfContentsListProps>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "relative space-y-1.5 before:absolute before:inset-y-0 before:left-0.5 before:w-px before:bg-kumo-line",
-        className,
-      )}
-      {...props}
-    />
-  ),
-);
+const TableOfContentsList = forwardRef<
+  HTMLDivElement,
+  TableOfContentsListProps
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "relative space-y-1.5 before:absolute before:inset-y-0 before:left-0.5 before:w-px before:bg-kumo-line",
+      className,
+    )}
+    {...props}
+  />
+));
 
-export interface TableOfContentsItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface TableOfContentsItemProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   /** whether this item represents the currently active section. */
   active?: boolean;
 }
 
-const TableOfContentsItem = forwardRef<HTMLAnchorElement, TableOfContentsItemProps>(
-  ({ active = false, className, children, ...props }, ref) => {
-    const stateClasses = active
-      ? KUMO_TABLE_OF_CONTENTS_VARIANTS.state.active.classes
-      : cn(KUMO_TABLE_OF_CONTENTS_VARIANTS.state.default.classes, ITEM_HOVER);
+const TableOfContentsItem = forwardRef<
+  HTMLAnchorElement,
+  TableOfContentsItemProps
+>(({ active = false, className, children, ...props }, ref) => {
+  const stateClasses = active
+    ? KUMO_TABLE_OF_CONTENTS_VARIANTS.state.active.classes
+    : KUMO_TABLE_OF_CONTENTS_VARIANTS.state.default.classes;
 
-    return (
-      <a
-        ref={ref}
-        aria-current={active ? "true" : undefined}
-        className={cn(ITEM_BASE, stateClasses, className)}
-        {...props}
-      >
-        <span
-          aria-hidden="true"
-          className={cn(
-            INDICATOR_BASE,
-            active ? "opacity-100" : "opacity-0 group-hover:opacity-60",
-          )}
-        />
-        <span className="block min-w-0 leading-5">{children}</span>
-      </a>
-    );
-  },
-);
+  return (
+    <a
+      ref={ref}
+      aria-current={active ? "true" : undefined}
+      className={cn(ITEM_BASE, stateClasses, className)}
+      {...props}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          INDICATOR_BASE,
+          active ? "opacity-100" : "opacity-0 group-hover:opacity-60",
+        )}
+      />
+      <span className="block min-w-0 leading-5">{children}</span>
+    </a>
+  );
+});
 
-export interface TableOfContentsGroupProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "title"
-> {
+export interface TableOfContentsGroupProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Label displayed above the group's items. */
   label: string;
   /** URL the group label links to. */
   href?: string;
 }
 
-const TableOfContentsGroup = forwardRef<HTMLDivElement, TableOfContentsGroupProps>(
-  ({ label, href, className, children, ...props }, ref) => (
-    <div ref={ref} className={cn("mt-3", className)} {...props}>
-      {href ? (
-        <a
-          href={href}
-          className="mb-1.5 block pl-5 text-xs font-medium text-kumo-subtle no-underline hover:text-kumo-default"
-        >
-          {label}
-        </a>
-      ) : (
-        <p className="mb-1.5 pl-5 text-xs font-medium text-kumo-subtle">{label}</p>
-      )}
-      <div className="space-y-1.5 pl-3">{children}</div>
-    </div>
-  ),
-);
+const TableOfContentsGroup = forwardRef<
+  HTMLDivElement,
+  TableOfContentsGroupProps
+>(({ label, href, className, children, ...props }, ref) => (
+  <div ref={ref} className={cn("mt-3", className)} {...props}>
+    {href ? (
+      <a
+        href={href}
+        className="mb-1.5 block pl-5 text-xs font-medium text-kumo-subtle no-underline hover:text-kumo-default"
+      >
+        {label}
+      </a>
+    ) : (
+      <p className="mb-1.5 pl-5 text-xs font-medium text-kumo-subtle">
+        {label}
+      </p>
+    )}
+    <div className="space-y-1.5 pl-3">{children}</div>
+  </div>
+));
 
 TableOfContentsRoot.displayName = "TableOfContents";
 TableOfContentsTitle.displayName = "TableOfContents.Title";
 TableOfContentsList.displayName = "TableOfContents.List";
 TableOfContentsItem.displayName = "TableOfContents.Item";
 TableOfContentsGroup.displayName = "TableOfContents.Group";
-
-export type TableOfContentsProps = React.HTMLAttributes<HTMLElement>;
 
 /**
  * TableOfContents — presentational compound component for section navigation.
