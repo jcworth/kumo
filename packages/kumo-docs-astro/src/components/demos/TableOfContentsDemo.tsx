@@ -65,7 +65,6 @@ export function TableOfContentsNoActiveDemo() {
   );
 }
 
-/** Items organized into labeled groups. */
 export function TableOfContentsGroupDemo() {
   return (
     <TableOfContents>
@@ -75,6 +74,7 @@ export function TableOfContentsGroupDemo() {
           Overview
         </TableOfContents.Item>
         <TableOfContents.Group label="Getting Started">
+          k{" "}
           <TableOfContents.Item className="cursor-pointer">
             Installation
           </TableOfContents.Item>
@@ -95,7 +95,6 @@ export function TableOfContentsGroupDemo() {
   );
 }
 
-/** Navigation list without the title heading. */
 export function TableOfContentsWithoutTitleDemo() {
   return (
     <TableOfContents>
