@@ -73,6 +73,7 @@ const componentItems: NavItem[] = [
   { label: "Surface", href: "/components/surface" },
   { label: "Switch", href: "/components/switch" },
   { label: "Table", href: "/components/table" },
+  { label: "Tag", href: "/components/tag" },
   { label: "Tabs", href: "/components/tabs" },
   { label: "Text", href: "/components/text" },
   { label: "Toast", href: "/components/toast" },

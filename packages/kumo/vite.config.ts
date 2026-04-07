@@ -196,7 +196,8 @@ export default defineConfig(({ mode }) => {
             __dirname,
             "src/components/sidebar/index.ts",
           ),
-          // PLOP_INJECT_COMPONENT_ENTRY
+          'components/tag': resolve(__dirname, 'src/components/tag/index.ts'),
+        // PLOP_INJECT_COMPONENT_ENTRY
           // Utils entry point
           utils: resolve(__dirname, "src/utils/index.ts"),
           // Primitives entry point (base-ui re-exports)
