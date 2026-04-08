@@ -74,7 +74,6 @@ export function TableOfContentsGroupDemo() {
           Overview
         </TableOfContents.Item>
         <TableOfContents.Group label="Getting Started">
-          k{" "}
           <TableOfContents.Item className="cursor-pointer">
             Installation
           </TableOfContents.Item>
