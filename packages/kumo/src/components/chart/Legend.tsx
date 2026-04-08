@@ -1,4 +1,4 @@
-import type { PointerEventHandler } from "react";
+import type { MouseEventHandler, PointerEventHandler } from "react";
 import { cn } from "../../utils";
 
 /** Shared props for both legend item variants */
@@ -17,6 +17,10 @@ interface LegendItemProps {
   onPointerEnter?: PointerEventHandler<HTMLDivElement>;
   /** Fired when a pointer leaves the legend item — useful for resetting chart series emphasis */
   onPointerLeave?: PointerEventHandler<HTMLDivElement>;
+  /** Fired when the legend item is clicked — useful for toggling series visibility */
+  onClick?: MouseEventHandler<HTMLDivElement>;
+  /** Optional className to customize legend item presentation */
+  className?: string;
 }
 
 /**
@@ -32,12 +36,19 @@ function LargeItem({
   inactive,
   onPointerEnter,
   onPointerLeave,
+  onClick,
+  className,
 }: LegendItemProps) {
   return (
     <div
-      className="inline-flex flex-col gap-2 min-w-42 py-2"
+      className={cn(
+        "inline-flex flex-col gap-2 min-w-42 py-2",
+        { "cursor-pointer": !!onClick },
+        className,
+      )}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
+      onClick={onClick}
     >
       <div className="flex items-center gap-2">
         <span
@@ -83,12 +94,19 @@ function SmallItem({
   inactive,
   onPointerEnter,
   onPointerLeave,
+  onClick,
+  className,
 }: LegendItemProps) {
   return (
     <div
-      className="inline-flex items-center gap-2"
+      className={cn(
+        "inline-flex items-center gap-2",
+        { "cursor-pointer": !!onClick },
+        className,
+      )}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
+      onClick={onClick}
     >
       <span
         className={cn("size-2 rounded-full inline-block", {
