@@ -1,5 +1,15 @@
-import type { MouseEventHandler, PointerEventHandler } from "react";
+import type {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  PointerEventHandler,
+} from "react";
 import { cn } from "../../utils";
+
+const onInteractiveKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  event.currentTarget.click();
+};
 
 /** Shared props for both legend item variants */
 interface LegendItemProps {
@@ -41,6 +51,9 @@ function LargeItem({
 }: LegendItemProps) {
   return (
     <div
+      // oxlint-disable-next-line prefer-tag-over-role
+      role="button"
+      tabIndex={onClick ? 0 : -1}
       className={cn(
         "inline-flex flex-col gap-2 min-w-42 py-2",
         { "cursor-pointer": !!onClick },
@@ -49,6 +62,7 @@ function LargeItem({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onClick={onClick}
+      onKeyDown={onClick ? onInteractiveKeyDown : undefined}
     >
       <div className="flex items-center gap-2">
         <span
@@ -99,6 +113,9 @@ function SmallItem({
 }: LegendItemProps) {
   return (
     <div
+      // oxlint-disable-next-line prefer-tag-over-role
+      role="button"
+      tabIndex={onClick ? 0 : -1}
       className={cn(
         "inline-flex items-center gap-2",
         { "cursor-pointer": !!onClick },
@@ -107,6 +124,7 @@ function SmallItem({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onClick={onClick}
+      onKeyDown={onClick ? onInteractiveKeyDown : undefined}
     >
       <span
         className={cn("size-2 rounded-full inline-block", {
