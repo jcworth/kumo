@@ -24,7 +24,7 @@ export type KumoTableOfContentsState =
   keyof typeof KUMO_TABLE_OF_CONTENTS_VARIANTS.state;
 
 const ITEM_BASE =
-  "group relative block truncate rounded-md py-1 pl-5 text-sm no-underline transition-all duration-500";
+  "group relative block w-full truncate rounded-md py-1 pl-5 text-sm text-left no-underline transition-all duration-500";
 
 const INDICATOR_BASE =
   "absolute inset-y-0 left-0.5 w-0.5 rounded-full transition-all duration-200 bg-kumo-brand";
