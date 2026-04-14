@@ -9,22 +9,28 @@ const headings = [
   { text: "Examples" },
 ];
 
+function DemoWrapper({ children }: { children: React.ReactNode }) {
+  return <div className="min-w-48">{children}</div>;
+}
+
 export function TableOfContentsBasicDemo() {
   return (
-    <TableOfContents>
-      <TableOfContents.Title>On this page</TableOfContents.Title>
-      <TableOfContents.List>
-        {headings.map((heading) => (
-          <TableOfContents.Item
-            key={heading.text}
-            active={heading.text === "Usage"}
-            className="cursor-pointer"
-          >
-            {heading.text}
-          </TableOfContents.Item>
-        ))}
-      </TableOfContents.List>
-    </TableOfContents>
+    <DemoWrapper>
+      <TableOfContents>
+        <TableOfContents.Title>On this page</TableOfContents.Title>
+        <TableOfContents.List>
+          {headings.map((heading) => (
+            <TableOfContents.Item
+              key={heading.text}
+              active={heading.text === "Usage"}
+              className="cursor-pointer"
+            >
+              {heading.text}
+            </TableOfContents.Item>
+          ))}
+        </TableOfContents.List>
+      </TableOfContents>
+    </DemoWrapper>
   );
 }
 
@@ -32,83 +38,91 @@ export function TableOfContentsInteractiveDemo() {
   const [active, setActive] = useState("Introduction");
 
   return (
-    <TableOfContents>
-      <TableOfContents.Title>On this page</TableOfContents.Title>
-      <TableOfContents.List>
-        {headings.map((heading) => (
-          <TableOfContents.Item
-            key={heading.text}
-            active={heading.text === active}
-            onClick={() => setActive(heading.text)}
-            className="cursor-pointer"
-          >
-            {heading.text}
-          </TableOfContents.Item>
-        ))}
-      </TableOfContents.List>
-    </TableOfContents>
+    <DemoWrapper>
+      <TableOfContents>
+        <TableOfContents.Title>On this page</TableOfContents.Title>
+        <TableOfContents.List>
+          {headings.map((heading) => (
+            <TableOfContents.Item
+              key={heading.text}
+              active={heading.text === active}
+              onClick={() => setActive(heading.text)}
+              className="cursor-pointer"
+            >
+              {heading.text}
+            </TableOfContents.Item>
+          ))}
+        </TableOfContents.List>
+      </TableOfContents>
+    </DemoWrapper>
   );
 }
 
 export function TableOfContentsNoActiveDemo() {
   return (
-    <TableOfContents>
-      <TableOfContents.Title>On this page</TableOfContents.Title>
-      <TableOfContents.List>
-        {headings.map((heading) => (
-          <TableOfContents.Item key={heading.text} className="cursor-pointer">
-            {heading.text}
-          </TableOfContents.Item>
-        ))}
-      </TableOfContents.List>
-    </TableOfContents>
+    <DemoWrapper>
+      <TableOfContents>
+        <TableOfContents.Title>On this page</TableOfContents.Title>
+        <TableOfContents.List>
+          {headings.map((heading) => (
+            <TableOfContents.Item key={heading.text} className="cursor-pointer">
+              {heading.text}
+            </TableOfContents.Item>
+          ))}
+        </TableOfContents.List>
+      </TableOfContents>
+    </DemoWrapper>
   );
 }
 
 export function TableOfContentsGroupDemo() {
   return (
-    <TableOfContents>
-      <TableOfContents.Title>On this page</TableOfContents.Title>
-      <TableOfContents.List>
-        <TableOfContents.Item active className="cursor-pointer">
-          Overview
-        </TableOfContents.Item>
-        <TableOfContents.Group label="Getting Started">
-          <TableOfContents.Item className="cursor-pointer">
-            Installation
+    <DemoWrapper>
+      <TableOfContents>
+        <TableOfContents.Title>On this page</TableOfContents.Title>
+        <TableOfContents.List>
+          <TableOfContents.Item active className="cursor-pointer">
+            Overview
           </TableOfContents.Item>
-          <TableOfContents.Item className="cursor-pointer">
-            Configuration
-          </TableOfContents.Item>
-        </TableOfContents.Group>
-        <TableOfContents.Group label="API">
-          <TableOfContents.Item className="cursor-pointer">
-            Props
-          </TableOfContents.Item>
-          <TableOfContents.Item className="cursor-pointer">
-            Events
-          </TableOfContents.Item>
-        </TableOfContents.Group>
-      </TableOfContents.List>
-    </TableOfContents>
+          <TableOfContents.Group label="Getting Started">
+            <TableOfContents.Item className="cursor-pointer">
+              Installation
+            </TableOfContents.Item>
+            <TableOfContents.Item className="cursor-pointer">
+              Configuration
+            </TableOfContents.Item>
+          </TableOfContents.Group>
+          <TableOfContents.Group label="API">
+            <TableOfContents.Item className="cursor-pointer">
+              Props
+            </TableOfContents.Item>
+            <TableOfContents.Item className="cursor-pointer">
+              Events
+            </TableOfContents.Item>
+          </TableOfContents.Group>
+        </TableOfContents.List>
+      </TableOfContents>
+    </DemoWrapper>
   );
 }
 
 export function TableOfContentsWithoutTitleDemo() {
   return (
-    <TableOfContents>
-      <TableOfContents.List>
-        {headings.slice(0, 3).map((heading) => (
-          <TableOfContents.Item
-            key={heading.text}
-            active={heading.text === "Introduction"}
-            className="cursor-pointer"
-          >
-            {heading.text}
-          </TableOfContents.Item>
-        ))}
-      </TableOfContents.List>
-    </TableOfContents>
+    <DemoWrapper>
+      <TableOfContents>
+        <TableOfContents.List>
+          {headings.slice(0, 3).map((heading) => (
+            <TableOfContents.Item
+              key={heading.text}
+              active={heading.text === "Introduction"}
+              className="cursor-pointer"
+            >
+              {heading.text}
+            </TableOfContents.Item>
+          ))}
+        </TableOfContents.List>
+      </TableOfContents>
+    </DemoWrapper>
   );
 }
 
@@ -117,24 +131,26 @@ export function TableOfContentsRenderPropDemo() {
   const [clicked, setClicked] = useState<string | null>(null);
 
   return (
-    <div className="space-y-3">
-      <TableOfContents>
-        <TableOfContents.List>
-          {["Introduction", "Installation", "Usage"].map((text) => (
-            <TableOfContents.Item
-              key={text}
-              render={<button type="button" />}
-              onClick={() => setClicked(text)}
-              active={text === "Introduction"}
-            >
-              {text}
-            </TableOfContents.Item>
-          ))}
-        </TableOfContents.List>
-      </TableOfContents>
-      {clicked && (
-        <p className="text-xs text-kumo-subtle">Clicked: {clicked}</p>
-      )}
-    </div>
+    <DemoWrapper>
+      <div className="space-y-3">
+        <TableOfContents>
+          <TableOfContents.List>
+            {["Introduction", "Installation", "Usage"].map((text) => (
+              <TableOfContents.Item
+                key={text}
+                render={<button type="button" />}
+                onClick={() => setClicked(text)}
+                active={text === "Introduction"}
+              >
+                {text}
+              </TableOfContents.Item>
+            ))}
+          </TableOfContents.List>
+        </TableOfContents>
+        {clicked && (
+          <p className="text-xs text-kumo-subtle">Clicked: {clicked}</p>
+        )}
+      </div>
+    </DemoWrapper>
   );
 }
