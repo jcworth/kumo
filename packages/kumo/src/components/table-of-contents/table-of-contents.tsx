@@ -32,13 +32,11 @@ const INDICATOR_BASE =
 export type TableOfContentsProps = React.HTMLAttributes<HTMLElement>;
 
 const TableOfContentsRoot = forwardRef<HTMLElement, TableOfContentsProps>(
-  ({ className, ...props }, ref) => (
-    <nav
-      ref={ref}
-      aria-label="Table of contents"
-      className={className}
-      {...props}
-    />
+  (
+    { className, "aria-label": ariaLabel = "Table of contents", ...props },
+    ref,
+  ) => (
+    <nav ref={ref} aria-label={ariaLabel} className={className} {...props} />
   ),
 );
 
