@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import { TableOfContents } from "@cloudflare/kumo";
 
 const headings = [
@@ -112,73 +112,29 @@ export function TableOfContentsWithoutTitleDemo() {
   );
 }
 
-/**
- * Demonstrates using the `render` prop to integrate with custom link components.
- * Shows default `<a>` behavior alongside a React Router-style custom link.
- */
+/** Demonstrates using the `render` prop with a custom link component. */
 export function TableOfContentsRenderPropDemo() {
-  const [routerNavigation, setRouterNavigation] = useState<string | null>(null);
-
-  // Mock React Router Link component
-  const RouterLink = forwardRef<
-    HTMLAnchorElement,
-    React.AnchorHTMLAttributes<HTMLAnchorElement>
-  >(({ href, onClick, children, ...props }, ref) => (
-    <a
-      ref={ref}
-      href={href}
-      onClick={(e) => {
-        e.preventDefault();
-        setRouterNavigation(href ?? null);
-        onClick?.(e);
-      }}
-      {...props}
-    >
-      {children}
-    </a>
-  ));
-  RouterLink.displayName = "RouterLink";
+  const [clicked, setClicked] = useState<string | null>(null);
 
   return (
-    <div className="flex gap-8">
-      {/* Default: uses <a> tag */}
-      <div className="flex-1">
-        <p className="mb-2 text-xs font-medium text-kumo-subtle">
-          Default (anchor tag)
-        </p>
-        <TableOfContents>
-          <TableOfContents.List>
-            <TableOfContents.Item href="#intro" active>
-              Introduction
+    <div className="space-y-3">
+      <TableOfContents>
+        <TableOfContents.List>
+          {["Introduction", "Installation", "Usage"].map((text) => (
+            <TableOfContents.Item
+              key={text}
+              render={<button type="button" />}
+              onClick={() => setClicked(text)}
+              active={text === "Introduction"}
+            >
+              {text}
             </TableOfContents.Item>
-            <TableOfContents.Item href="#install">
-              Installation
-            </TableOfContents.Item>
-          </TableOfContents.List>
-        </TableOfContents>
-      </div>
-
-      {/* With render prop: uses custom RouterLink */}
-      <div className="flex-1">
-        <p className="mb-2 text-xs font-medium text-kumo-subtle">
-          With render prop (Router)
-        </p>
-        <TableOfContents>
-          <TableOfContents.List>
-            <TableOfContents.Item render={<RouterLink />} href="/intro" active>
-              Introduction
-            </TableOfContents.Item>
-            <TableOfContents.Item render={<RouterLink />} href="/install">
-              Installation
-            </TableOfContents.Item>
-          </TableOfContents.List>
-        </TableOfContents>
-        {routerNavigation && (
-          <p className="mt-2 text-xs text-kumo-subtle">
-            Router navigated to: <code>{routerNavigation}</code>
-          </p>
-        )}
-      </div>
+          ))}
+        </TableOfContents.List>
+      </TableOfContents>
+      {clicked && (
+        <p className="text-xs text-kumo-subtle">Clicked: {clicked}</p>
+      )}
     </div>
   );
 }

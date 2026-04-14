@@ -116,24 +116,30 @@ export default function Example() {
   <TableOfContentsWithoutTitleDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Custom link component</Heading>
+<Heading level={3}>Custom element</Heading>
 <p>
-  By default, items render as standard anchor tags. Use the `render` prop to
-  integrate with framework routers like React Router or Next.js. Click the
-  Router links below to see client-side navigation.
+  Use the `render` prop to swap the default anchor for a button, router link, or
+  any element.
 </p>
 <ComponentExample demo="TableOfContentsRenderPropDemo">
   <TableOfContentsRenderPropDemo client:load />
 </ComponentExample>
 
-**With React Router**
-
 ```tsx
-import { Link } from "react-router-dom";
-
-<TableOfContents.Item render={<Link to="" />} href="/intro" active>
+// React Router
+<TableOfContents.Item render={<Link to="/intro" />} active>
   Introduction
-</TableOfContents.Item>;
+</TableOfContents.Item>
+
+// Next.js
+<TableOfContents.Item render={<Link href="/intro" />} active>
+  Introduction
+</TableOfContents.Item>
+
+// Button (no navigation)
+<TableOfContents.Item render={<button type="button" />} onClick={handleClick}>
+  Introduction
+</TableOfContents.Item>
 ```
 
 **With Next.js**
@@ -144,58 +150,6 @@ import Link from "next/link";
 <TableOfContents.Item render={<Link />} href="/intro" active>
   Introduction
 </TableOfContents.Item>;
-```
-
-**With Next.js**
-
-```tsx
-import Link from "next/link";
-
-<TableOfContents.Item render={<Link />} href="/intro" active>
-  Introduction
-</TableOfContents.Item>;
-```
-
-**With LinkProvider (app-wide)**
-
-```tsx
-import { LinkProvider } from "@cloudflare/kumo";
-import Link from "next/link";
-
-// Wrap your app once — all TableOfContents.Item components will use Link
-<LinkProvider component={Link}>
-  <App />
-</LinkProvider>;
-```
-
-**With LinkProvider (implicit)**
-
-```tsx
-import { LinkProvider } from "@cloudflare/kumo";
-import Link from "next/link";
-
-<LinkProvider component={Link}>
-  <TableOfContents>
-    <TableOfContents.List>
-      <TableOfContents.Item href="/intro">Introduction</TableOfContents.Item>
-    </TableOfContents.List>
-  </TableOfContents>
-</LinkProvider>;
-```
-
-**With LinkProvider (implicit)**
-
-```tsx
-import { LinkProvider } from "@cloudflare/kumo";
-import Link from "next/link";
-
-<LinkProvider component={Link}>
-  <TableOfContents>
-    <TableOfContents.List>
-      <TableOfContents.Item href="/intro">Introduction</TableOfContents.Item>
-    </TableOfContents.List>
-  </TableOfContents>
-</LinkProvider>;
 ```
 
 </ComponentSection>
