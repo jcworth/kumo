@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { cloneElement, forwardRef, isValidElement } from "react";
 import { cn } from "../../utils/cn";
 
 /** TableOfContents item state variant definitions. */
@@ -74,28 +74,36 @@ const TableOfContentsList = forwardRef<
     {...props}
   />
 ));
-
-export interface TableOfContentsItemProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  /** whether this item represents the currently active section. */
+export interface TableOfContentsItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Whether this item represents the currently active section. */
   active?: boolean;
+  /**
+   * Custom element to render as the link. Use this to integrate with
+   * framework routers (e.g., Next.js `<Link>`, React Router `<NavLink>`).
+   * The element receives all anchor props including `href`, `className`, and `children`.
+   *
+   * @example
+   * ```tsx
+   * <TableOfContents.Item render={<Link />} href="/intro" active>
+   *   Introduction
+   * </TableOfContents.Item>
+   * ```
+   */
+  render?: React.ReactElement;
 }
 
 const TableOfContentsItem = forwardRef<
   HTMLAnchorElement,
   TableOfContentsItemProps
->(({ active = false, className, children, ...props }, ref) => {
+>(({ active = false, className, children, render, ...props }, ref) => {
   const stateClasses = active
     ? KUMO_TABLE_OF_CONTENTS_VARIANTS.state.active.classes
     : KUMO_TABLE_OF_CONTENTS_VARIANTS.state.default.classes;
 
-  return (
-    <a
-      ref={ref}
-      aria-current={active ? "true" : undefined}
-      className={cn(ITEM_BASE, stateClasses, className)}
-      {...props}
-    >
+  const combinedClassName = cn(ITEM_BASE, stateClasses, className);
+
+  const innerContent = (
+    <>
       <span
         aria-hidden="true"
         className={cn(
@@ -104,12 +112,30 @@ const TableOfContentsItem = forwardRef<
         )}
       />
       <span className="block min-w-0 leading-5">{children}</span>
-    </a>
+    </>
   );
+
+  const sharedProps = {
+    ref,
+    "aria-current": active ? ("true" as const) : undefined,
+    className: combinedClassName,
+    children: innerContent,
+    ...props,
+  };
+
+  // If a render prop is provided, clone it with our props
+  if (render && isValidElement(render)) {
+    return cloneElement(render, sharedProps);
+  }
+
+  // Default to anchor tag
+  return <a {...sharedProps} />;
 });
 
-export interface TableOfContentsGroupProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface TableOfContentsGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title"
+> {
   /** Label displayed above the group's items. */
   label: string;
   /** URL the group label links to. */
