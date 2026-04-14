@@ -129,6 +129,7 @@ const TableOfContentsItem = forwardRef<
   }
 
   // Default to anchor tag
+  // oxlint-disable-next-line anchor-has-content -- children are in sharedProps
   return <a {...sharedProps} />;
 });
 
